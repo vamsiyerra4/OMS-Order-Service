@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
                .path(request.getRequestURI())
                .build();
 
-       return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
    }
 
@@ -58,12 +58,27 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_GATEWAY.getReasonPhrase())
-                .message(ex.getMessage())
+                .message(message)
                 .path(request.getRequestURI())
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
+   }
+
+   @ExceptionHandler(ProductServiceUnavailableException.class)
+   public ResponseEntity<ErrorResponse> handleProductServiceNotAvailable(
+           ProductServiceUnavailableException ex, HttpServletRequest request
+   ){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
    }
 
     @ExceptionHandler(Exception.class)
