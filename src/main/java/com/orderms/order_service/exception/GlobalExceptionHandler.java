@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
                .path(request.getRequestURI())
                .build();
 
-       return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
    }
 
@@ -57,13 +57,45 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_GATEWAY.getReasonPhrase())
-                .message(ex.getMessage())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(message)
                 .path(request.getRequestURI())
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
+   }
+
+   @ExceptionHandler(ProductServiceUnavailableException.class)
+   public ResponseEntity<ErrorResponse> handleProductServiceNotAvailable(
+           ProductServiceUnavailableException ex, HttpServletRequest request
+   ){
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
+   }
+
+
+   @ExceptionHandler(PaymentServiceUnavailableException.class)
+   public ResponseEntity<ErrorResponse> handlePaymentServiceNotAvailable(
+           PaymentServiceUnavailableException ex, HttpServletRequest request
+   ){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
    }
 
     @ExceptionHandler(Exception.class)
