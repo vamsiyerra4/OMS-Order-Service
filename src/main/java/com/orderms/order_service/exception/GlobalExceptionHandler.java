@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_GATEWAY.getReasonPhrase())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(message)
                 .path(request.getRequestURI())
                 .build();
@@ -74,6 +74,23 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
+   }
+
+
+   @ExceptionHandler(PaymentServiceUnavailableException.class)
+   public ResponseEntity<ErrorResponse> handlePaymentServiceNotAvailable(
+           PaymentServiceUnavailableException ex, HttpServletRequest request
+   ){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .error(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
