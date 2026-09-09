@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
         url = "${product-service.url:http://localhost:8082}")
 public interface ProductClient {
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/api/products/{id}")
     ProductResponseDto getProductById(@PathVariable Long id);
 }
